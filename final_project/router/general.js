@@ -36,40 +36,61 @@ public_users.get('/',function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  const isbn = req.params.isbn;
-  return res.status(200).json(books[isbn]);
- });
+public_users.get('/isbn/:isbn', async function(req, res) {
+    try {
+        const isbn = req.params.isbn;
+
+        const response = await axios.get('http://localhost:5000/');
+        const books = response.data;
+
+        return res.status(200).json(books[isbn]);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+});
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  const author = req.params.author;
-  let filteredBooks = {};
+public_users.get('/author/:author', async function(req, res) {
+    try {
+        const author = req.params.author;
 
-  Object.keys(books).forEach(key => {
-    if (books[key].author === author) {
-      filteredBooks[key] = books[key];
+        const response = await axios.get('http://localhost:5000/');
+        const books = response.data;
+
+        let filteredBooks = {};
+
+        Object.keys(books).forEach(key => {
+            if (books[key].author === author) {
+                filteredBooks[key] = books[key];
+            }
+        });
+
+        return res.status(200).json(filteredBooks);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
-  });
-
-  return res.status(200).json(filteredBooks);
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  const title = req.params.title;
-  let filteredBooks = {};
+public_users.get('/title/:title', async function(req, res) {
+    try {
+        const title = req.params.title;
 
-  Object.keys(books).forEach(key => {
-    if (books[key].title === title) {
-      filteredBooks[key] = books[key];
+        const response = await axios.get('http://localhost:5000/');
+        const books = response.data;
+
+        let filteredBooks = {};
+
+        Object.keys(books).forEach(key => {
+            if (books[key].title === title) {
+                filteredBooks[key] = books[key];
+            }
+        });
+
+        return res.status(200).json(filteredBooks);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
-  });
-
-  return res.status(200).json(filteredBooks);
 });
 
 //  Get book review
@@ -79,63 +100,13 @@ public_users.get('/review/:isbn',function (req, res) {
   return res.status(200).json(books[isbn].reviews);
 });
 
-public_users.get('/async/books', async (req, res) => {
-    try {
-      const response = await axios.get('http://localhost:5000/');
-      return res.status(200).json(response.data);
-    } catch (error) {
-      return res.status(500).json({
-        message: error.message
-      });
-    }
-  });
 
-  public_users.get('/async/isbn/:isbn', async (req, res) => {
-    try {
-      const isbn = req.params.isbn;
+
+
+
+ 
+
   
-      const response = await axios.get(
-        `http://localhost:5000/isbn/${isbn}`
-      );
-  
-      return res.status(200).json(response.data);
-    } catch (error) {
-      return res.status(500).json({
-        message: error.message
-      });
-    }
-  });
 
-  public_users.get('/async/author/:author', async (req, res) => {
-  try {
-    const author = req.params.author;
-
-    const response = await axios.get(
-      `http://localhost:5000/author/${author}`
-    );
-
-    return res.status(200).json(response.data);
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message
-    });
-  }
-});
-
-public_users.get('/async/title/:title', async (req, res) => {
-    try {
-      const title = req.params.title;
-  
-      const response = await axios.get(
-        `http://localhost:5000/title/${title}`
-      );
-  
-      return res.status(200).json(response.data);
-    } catch (error) {
-      return res.status(500).json({
-        message: error.message
-      });
-    }
-  });
 
 module.exports.general = public_users;
